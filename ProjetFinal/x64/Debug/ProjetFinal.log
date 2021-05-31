@@ -1,0 +1,14 @@
+﻿  ProjetFinal.cpp
+C:\Users\Admin123\Desktop\ISEP_20202021\Semestre2\ApplicationMultimedia\ProjetFinal\ProjetFinal\ProjetFinal.cpp(127,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\Admin123\Desktop\ISEP_20202021\Semestre2\ApplicationMultimedia\ProjetFinal\ProjetFinal\ProjetFinal.cpp(127,40): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\Admin123\Desktop\ISEP_20202021\Semestre2\ApplicationMultimedia\ProjetFinal\ProjetFinal\ProjetFinal.cpp(190,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+C:\Users\Admin123\Desktop\ISEP_20202021\Semestre2\ApplicationMultimedia\ProjetFinal\ProjetFinal\ProjetFinal.cpp(226,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+  ProjetFinal.vcxproj -> C:\Users\Admin123\Desktop\ISEP_20202021\Semestre2\ApplicationMultimedia\ProjetFinal\x64\Debug\ProjetFinal.exe
