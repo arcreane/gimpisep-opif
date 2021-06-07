@@ -4,6 +4,7 @@
 #include <opencv2/stitching.hpp>
 #include <iostream>
 
+
 using namespace cv;
 using namespace std;
 
@@ -14,6 +15,9 @@ Mat resizer(Mat image);
 Mat darknen(Mat image);
 Mat panoramaDirectory();
 Mat panoramaImages();
+Mat Erosion(Mat image);
+Mat Dilatation(Mat image);
+void save(Mat image, String filepath);
 
 //Variables utiles pour le mode panorama
 Stitcher::Mode mode = Stitcher::PANORAMA;
@@ -22,49 +26,73 @@ int main(int argc, char* argv[]) {
 
     cout << "Bienvenue dans le nouveau GIMP\n";
     Mat result = newImage();
-
     int choix = 0;
     String choixPanorama = "x";
+    String filePath;
+    Mat previousResult=result;
 
     namedWindow("GIMP");
     while (choix != -1) {
         moveWindow("GIMP", 40, 30);
         cv::imshow("GIMP", result);
         cv::waitKey(10);
-        cout << "Choisisez une entier positif\n" ;
+        cout << "Choisisez une entier positif\n";
         cout << "Choissisez 1 pour entrer dans le mode diaporama\n";
         cout << "Choissisez 2 pour entrer dans le mode Canny Edge Detection\n";
         cout << "Choissisez 3 pour entrer dans le mode Resize\n";
         cout << "Choissisez 4 pour entrer dans le mode Darknen\n";
+        cout << "Choissisez 5 pour entrer dans le mode Erosion\n";
+        cout << "Choissisez 6 pour entrer dans le mode Dilatation\n";
+
+
         cout << "Choissisez 10 pour ouvrir une nouvelle image\n";
+        cout << "Choissisez 13 pour revenir a l'image precedente\n";
+
         cout << "Choissisez -1 pour finir le programme\n";
         cin >> choix;
-        switch (choix){
-            case 1:
-                cout << "Choissisez a pour entrer le nom du dossier \n";
-                cout << "Choissisez b pour rentrer le nom des images une par une\n";
-                cin >> choixPanorama;
-                if (choixPanorama == "a")
-                    result = panoramaDirectory();
-                else if (choixPanorama == "b")
-                    result = panoramaImages();
-                else
-                    cout << "Cela ne correspond à aucun choix. Veuillez recommencer.\n";
-                break;
-            case 2:
-                result = cannyEdgeDetection(result);
-                break;
-            case 3:
-                result = resizer(result);
-                break;
-            case 4:
-                result = darknen(result);
-                break;
-            case 10:
-                result = newImage();
-                break;
-            default:
-                choix = -1;
+        switch (choix) {
+        case 1:
+            previousResult = result;
+            cout << "Choissisez a pour entrer le nom du dossier \n";
+            cout << "Choissisez b pour rentrer le nom des images une par une\n";
+            cin >> choixPanorama;
+            if (choixPanorama == "a")
+                result = panoramaDirectory();
+            else if (choixPanorama == "b")
+                result = panoramaImages();
+            else
+                cout << "Cela ne correspond à aucun choix. Veuillez recommencer.\n";
+            break;
+        case 2:
+            previousResult = result;
+            result = cannyEdgeDetection(result);
+            break;
+        case 3:
+            previousResult = result;
+            result = resizer(result);
+            break;
+        case 4:
+            previousResult = result;
+            result = darknen(result);
+            break;
+        case 5:
+            previousResult = result;
+            result = Erosion(result);
+            break;
+        case 6:
+            previousResult = result;
+            result = Dilatation(result);
+            break;
+        case 13:
+            result = previousResult;
+            break;
+        case 20:
+            break;
+        case 10:
+            result = newImage();
+            break;
+        default:
+            choix = -1;
         }
     }
 
@@ -80,6 +108,10 @@ Mat newImage() {
 
     Mat result = imread(imagesPath, IMREAD_COLOR);
     return result;
+}
+
+void save(Mat image, String filepath) {
+
 }
 
 /*
@@ -150,6 +182,9 @@ cv::Mat cannyEdgeDetection(cv::Mat image) {
     Fonction panorama qui va mettre en panorama un nombre d'images
     A l'aide du nom des images au sein même du dossier du projet
 */
+
+
+
 Mat panoramaImages() {
     vector<String> name;
     String names;
@@ -164,6 +199,7 @@ Mat panoramaImages() {
         cout << fini;
         cin.clear();
     }
+    vector<Mat> imgs;
 
     for (int i = 0; i < name.size(); i++) {
         Mat img = imread(name[i], IMREAD_COLOR);
@@ -190,7 +226,7 @@ Mat panoramaImages() {
 
 /*
 *   Ludivine Ducamp
-* 
+*
     Fonction panorama qui va mettre en panorama un nombre d'images
     A l'aide du chemin absolu du dossier
 */
@@ -200,6 +236,7 @@ Mat panoramaDirectory() {
     cin >> imagesPath;
 
     vector<String> name;
+    vector<Mat> imgs;
     glob(imagesPath, name, true);
     for (int i = 0; i < name.size(); i++) {
         Mat img = imread(name[i], IMREAD_COLOR);
@@ -223,4 +260,38 @@ Mat panoramaDirectory() {
     waitKey(0);*/
     return result;
 
+}
+
+/*
+* 
+*       Ludivine Ducamp
+* 
+*/
+
+Mat Erosion(Mat image) {
+    Mat result;
+    int size;
+    cout << "Select the factor of Erosion ";
+    cin >> size;
+
+    int erosion_type = 0;
+    int erosion_elem = MORPH_RECT;
+    Mat element = getStructuringElement(erosion_type,
+        Size(2 * size + 1, 2 * size + 1),
+        Point(size, size));
+    erode(image, result, element);
+    return result;
+}
+Mat Dilatation(Mat image) {
+    Mat result;
+    int size;
+    cout << "Select the factor of Dilatation ";
+    cin >> size;
+    int dilation_type = 0;
+    int dilation_elem = MORPH_RECT;
+    Mat element = getStructuringElement(dilation_type,
+        Size(2 * size + 1, 2 * size + 1),
+        Point(size, size));
+    dilate(image, result, element);
+    return result;
 }
