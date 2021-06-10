@@ -1,14 +1,14 @@
 ﻿  ProjetFinal.cpp
-E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(152,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(193,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
           with
           [
               _Tp=int
           ]
-E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(152,40): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(193,40): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
           with
           [
               _Tp=int
           ]
-E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(219,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
-E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(256,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
-  ProjetFinal.vcxproj -> E:\multimedia\gimpisep-opif\ProjetFinal\x64\Debug\ProjetFinal.exe
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(264,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(300,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+  ProjetFinal.vcxproj -> C:\Users\admin\source\repos\ProjetFinal\x64\Debug\ProjetFinal.exe
