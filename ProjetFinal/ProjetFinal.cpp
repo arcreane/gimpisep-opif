@@ -17,6 +17,7 @@ Mat panoramaImages();
 Mat Erosion(Mat image);
 Mat Dilatation(Mat image);
 void save(Mat image, String filepath);
+void saveImage(Mat image);
 
 //Variables globales
 Stitcher::Mode mode = Stitcher::PANORAMA;
@@ -37,7 +38,7 @@ int main(int argc, char* argv[]) {
     Mat result = newImage();
 
     //Si une image n'est pas trouvée, le programme s'arrête
-    if (result.empty()){
+    if (result.empty()) {
         std::cout << "Impossible de trouver une image.\n" << std::endl;
         return 0;
     }
@@ -66,6 +67,7 @@ int main(int argc, char* argv[]) {
 
 
         cout << "Choissisez 10 pour ouvrir une nouvelle image\n";
+        cout << "Choissisez 11 pour enresgitrer l'image\n";
         cout << "Choissisez 13 pour revenir a l'image precedente\n";
 
         cout << "Choissisez -1 pour finir le programme\n";
@@ -74,47 +76,50 @@ int main(int argc, char* argv[]) {
 
         //Suivant les choix choisis, la bonne fonction sera lancée
         switch (choix) {
-            case 1: //Mode panorama
-                previousResult = result;
-                cout << "Choissisez a pour entrer le nom du dossier \n";
-                cout << "Choissisez b pour rentrer le nom des images une par une\n";
-                cin >> choixPanorama;
-                if (choixPanorama == "a")
-                    result = panoramaDirectory();
-                else if (choixPanorama == "b")
-                    result = panoramaImages();
-                else
-                    cout << "Cela ne correspond à aucun choix. Veuillez recommencer.\n";
-                break;
-            case 2: //Mode Canny Edge Detection
-                previousResult = result;
-                result = cannyEdgeDetection(result);
-                break;
-            case 3: //Mode resize
-                previousResult = result;
-                result = resizer(result);
-                break;
-            case 4: //Mode darken
-                previousResult = result;
-                result = darknen(result);
-                break;
-            case 5: //Mode Erosion
-                previousResult = result;
-                result = Erosion(result);
-                break;
-            case 6: //Mode Dilatation
-                previousResult = result;
-                result = Dilatation(result);
-                break;
-            case 10: //Mode Nouvelle image
-                result = newImage();
-                break;
-            case 13: //Mode Image précedente
-                result = previousResult;
-                break;
+        case 1: //Mode panorama
+            previousResult = result;
+            cout << "Choissisez a pour entrer le nom du dossier \n";
+            cout << "Choissisez b pour rentrer le nom des images une par une\n";
+            cin >> choixPanorama;
+            if (choixPanorama == "a")
+                result = panoramaDirectory();
+            else if (choixPanorama == "b")
+                result = panoramaImages();
+            else
+                cout << "Cela ne correspond à aucun choix. Veuillez recommencer.\n";
+            break;
+        case 2: //Mode Canny Edge Detection
+            previousResult = result;
+            result = cannyEdgeDetection(result);
+            break;
+        case 3: //Mode resize
+            previousResult = result;
+            result = resizer(result);
+            break;
+        case 4: //Mode darken
+            previousResult = result;
+            result = darknen(result);
+            break;
+        case 5: //Mode Erosion
+            previousResult = result;
+            result = Erosion(result);
+            break;
+        case 6: //Mode Dilatation
+            previousResult = result;
+            result = Dilatation(result);
+            break;
+        case 10: //Mode Nouvelle image
+            result = newImage();
+            break;
+        case 11: //Enregistrer l'image
+            saveImage(result);
+            break;
+        case 13: //Mode Image précedente
+            result = previousResult;
+            break;
 
-            default: // Fin du programme
-                choix = -1;
+        default: // Fin du programme
+            choix = -1;
         }
     }
 
@@ -129,7 +134,7 @@ int main(int argc, char* argv[]) {
  * @author Ludivine Ducamp
  * @author Louis de La Tullaye
  * @author Louis Gongora
- * 
+ *
  * Fonction permettant d'aller chercher une nouvelle image
  */
 Mat newImage() {
@@ -344,4 +349,17 @@ Mat Dilatation(Mat image) {
         Point(size, size));
     dilate(image, result, element);
     return result;
+}
+
+/**
+ * @author Thomas Borie
+ * @author Antoine Chenu
+ * @author Ludivine Ducamp
+ * @author Louis de La Tullaye
+ * @author Louis Gongora
+ *
+ * Fonction permettant d'enregistrer l'image résultat sous le nom save.jpg
+ */
+void saveImage(Mat image) {
+    imwrite("save.jpg", image);
 }
