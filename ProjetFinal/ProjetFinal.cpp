@@ -8,7 +8,15 @@ using namespace cv;
 using namespace std;
 
 //Différentes fonctions créées
+int gimp_photo();
+int gimp_video();
+
 Mat newImage();
+VideoCapture newVideo();
+
+void darken(VideoCapture video, int valeur);
+void contrast(VideoCapture video, int valeur);
+
 Mat cannyEdgeDetection(Mat image);
 Mat resizer(Mat image);
 Mat darknen(Mat image);
@@ -18,6 +26,7 @@ Mat Erosion(Mat image);
 Mat Dilatation(Mat image);
 void save(Mat image, String filepath);
 void saveImage(Mat image);
+
 
 //Variables globales
 Stitcher::Mode mode = Stitcher::PANORAMA;
@@ -34,6 +43,38 @@ int main(int argc, char* argv[]) {
 
     cout << "Bienvenue dans le nouveau GIMP\n\n\n";
 
+    cout << "Voulez-vous travailler avec une image ou une vidéo ?\n";
+    cout << "1 pour l'image\n";
+    cout << "2 pour la vidéo\n";
+    cout << "Une toute autre réponse lancera le programme pour la photo.\n";
+    int choixImageVideo = 0;
+    cin >> choixImageVideo;
+        switch (choixImageVideo) {
+            case 1:
+                gimp_photo();
+                break;
+            case 2:
+                gimp_video();
+                break;
+            default:
+                gimp_photo();
+        }
+
+    waitKey(1);
+    destroyAllWindows();
+    return 0;
+}
+
+/**
+ * @author Thomas Borie
+ * @author Antoine Chenu
+ * @author Ludivine Ducamp
+ * @author Louis de La Tullaye
+ * @author Louis Gongora
+ *
+ * Fonction permettant d'effectuer différentes fonctionnalités sur une photo
+ */
+int gimp_photo() {
     //Recherche de la toute première image
     Mat result = newImage();
 
@@ -122,10 +163,159 @@ int main(int argc, char* argv[]) {
             choix = -1;
         }
     }
+}
 
-    waitKey(1);
-    destroyAllWindows();
-    return 0;
+/**
+ * @author Thomas Borie
+ * @author Antoine Chenu
+ * @author Ludivine Ducamp
+ * @author Louis de La Tullaye
+ * @author Louis Gongora
+ *
+ * Fonction permettant d'effectuer différentes fonctionnalités sur une vidéo
+ */
+int gimp_video() {
+    //Recherche de la toute première vidéo 
+    VideoCapture result;
+
+    int choix = 0;
+    int bright = 0;
+    float value_constrast = 0;
+
+
+    //Proposition des différentes valeurs possibles
+
+    while (choix != -1) {
+        cout << "\n\n\n\nChoisisez une entier positif\n";
+        cout << "Choissisez 1 pour entrer dans le Darken\n";
+        cout << "Choissisez 2 pour entrer dans le Contraste\n";
+        cin >> choix;
+        switch (choix) {
+        case 1:
+            result = newVideo();
+
+            //Si une image n'est pas trouvée, le programme s'arrête
+            // Check if camera opened successfully
+            if (!result.isOpened()) {
+                cout << "Error opening video stream or file" << endl;
+                return -1;
+            }
+            do {
+                /// Initialisation des valeurs
+                cout << "* Enter the Brightness value [-255 (Dark) to 255 (Bright)]: ";
+                cin >> bright;
+            } while (bright < -255 || bright > 255);
+            darken(result, bright);
+            break;
+        case 2 :
+            result = newVideo();
+
+            //Si une image n'est pas trouvée, le programme s'arrête
+            // Check if camera opened successfully
+            if (!result.isOpened()) {
+                cout << "Error opening video stream or file" << endl;
+                return -1;
+            }
+            do {
+                /// Initialisation des valeurs
+                cout << "* Enter the contrast value [Starting at 0]: ";
+                cin >> value_constrast;
+            } while (value_constrast < 0);
+            contrast(result, value_constrast);
+            break;
+        default:
+            cout << "\nThis is not a valid option !" << endl;
+            break;
+        }
+    }
+}
+
+/**
+ * @author Ludivine Ducamp
+ * Fonction permettant d'augmenter ou de baisser le contraste d'une vidéo
+ */
+void contrast(VideoCapture video, int valeur) {
+    namedWindow("GIMP", WINDOW_AUTOSIZE);
+    while (true)
+    {
+        Mat frame;
+        // read a new frame from video
+        video >> frame;
+
+        //Breaking the while loop at the end of the video
+        if (frame.empty())
+            break;
+        Mat image;
+        //increase the brightness 
+        frame.Mat::convertTo(image, -1, valeur, 0);
+
+        //Show above frames inside the created windows.
+        imshow("GIMP", image);
+
+        //wait for for 10 ms until any key is pressed.
+        //If the 'Esc' key is pressed, break the while loop.
+        //If the any other key is pressed, continue the loop
+        //If any key is not pressed withing 10 ms, continue the loop
+        if (waitKey(10) == 27)
+        {
+            cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            break;
+        }
+    }
+}
+
+
+/**
+ * @author Ludivine Ducamp
+ * Fonction permettant d'augmenter ou de baisser la luminosité d'une vidéo
+ */
+void darken(VideoCapture video, int valeur) {
+    namedWindow("GIMP", WINDOW_AUTOSIZE);
+    while (true)
+    {
+        Mat frame;
+        // read a new frame from video
+        video >> frame;
+
+        //Breaking the while loop at the end of the video
+        if (frame.empty())
+            break;
+        Mat image;
+        //increase the brightness 
+        frame.Mat::convertTo(image, CV_8U, 1, valeur);
+
+        //Show above frames inside the created windows.
+        imshow("GIMP", image);
+
+        //wait for for 10 ms until any key is pressed.
+        //If the 'Esc' key is pressed, break the while loop.
+        //If the any other key is pressed, continue the loop
+        //If any key is not pressed withing 10 ms, continue the loop
+        if (waitKey(10) == 27)
+        {
+            cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            break;
+        }
+    }
+}
+
+/**
+ * @author Thomas Borie
+ * @author Antoine Chenu
+ * @author Ludivine Ducamp
+ * @author Louis de La Tullaye
+ * @author Louis Gongora
+ *
+ * Fonction permettant d'aller chercher une nouvelle image
+ */
+VideoCapture newVideo() {
+    cout << "Veuillez rentrer le chemin absolu de votre vidéo\n";
+    String imagesPath;
+    cin >> imagesPath;
+    
+    VideoCapture cap(imagesPath);
+
+    return cap;
 }
 
 /**

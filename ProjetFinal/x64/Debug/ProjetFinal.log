@@ -1,14 +1,16 @@
 ﻿  ProjetFinal.cpp
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(193,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(370,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
           with
           [
               _Tp=int
           ]
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(193,40): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(370,40): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
           with
           [
               _Tp=int
           ]
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(264,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(300,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(441,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(477,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(157): warning C4715: 'gimp_photo' : les chemins de contrôle ne retournent pas tous une valeur
+C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(213): warning C4715: 'gimp_video' : les chemins de contrôle ne retournent pas tous une valeur
   ProjetFinal.vcxproj -> C:\Users\admin\source\repos\ProjetFinal\x64\Debug\ProjetFinal.exe
