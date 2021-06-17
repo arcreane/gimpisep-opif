@@ -1,16 +1,27 @@
 ﻿  ProjetFinal.cpp
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(370,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(282,30): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(461,72): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
           with
           [
               _Tp=int
           ]
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(370,40): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(461,44): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
           with
           [
               _Tp=int
           ]
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(441,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(477,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(157): warning C4715: 'gimp_photo' : les chemins de contrôle ne retournent pas tous une valeur
-C:\Users\admin\source\repos\ProjetFinal\ProjetFinal\ProjetFinal.cpp(213): warning C4715: 'gimp_video' : les chemins de contrôle ne retournent pas tous une valeur
-  ProjetFinal.vcxproj -> C:\Users\admin\source\repos\ProjetFinal\x64\Debug\ProjetFinal.exe
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(639,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(639,40): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(710,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(746,9): warning C4551: liste d'arguments manquante dans l'appel de fonction
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(180): warning C4715: 'gimp_photo' : les chemins de contrôle ne retournent pas tous une valeur
+E:\multimedia\gimpisep-opif\ProjetFinal\ProjetFinal.cpp(301): warning C4715: 'gimp_video' : les chemins de contrôle ne retournent pas tous une valeur
+  ProjetFinal.vcxproj -> E:\multimedia\gimpisep-opif\ProjetFinal\x64\Debug\ProjetFinal.exe

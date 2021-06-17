@@ -35,7 +35,7 @@ Mat erosion(Mat image);
 Mat dilatation(Mat image);
 void save(Mat image, String filepath);
 void saveImage(Mat image);
-Mat detectAndDraw(Mat img);
+Mat faceDetection(Mat img);
 
 
 //Globale variable
@@ -59,16 +59,16 @@ int main(int argc, char* argv[]) {
     cout << "Any other response will run the program for the picture.\n";
     int choiceImageVideo = 0;
     cin >> choiceImageVideo;
-        switch (choiceImageVideo) {
-            case 1:
-                gimp_photo();
-                break;
-            case 2:
-                gimp_video();
-                break;
-            default:
-                gimp_photo();
-        }
+    switch (choiceImageVideo) {
+    case 1:
+        gimp_photo();
+        break;
+    case 2:
+        gimp_video();
+        break;
+    default:
+        gimp_photo();
+    }
 
     waitKey(1);
     destroyAllWindows();
@@ -118,11 +118,11 @@ int gimp_photo() {
         cout << "Choose 7 to enter the Face recognation\n";
 
 
-        cout << "Choose 10 to open a new image\n";
-        cout << "Choose 11 to save the image\n";
-        cout << "Choose 13 to return to the previous image\n";
+        cout << "Choose 100 to open a new image\n";
+        cout << "Choose 101 to save the image\n";
+        cout << "Choose 102 to return to the previous image\n";
 
-        cout << "Choose -1 to finish the program\n";
+        cout << "else : end of the program\n";
 
         cin >> choice;
 
@@ -139,7 +139,7 @@ int gimp_photo() {
                 result = panoramaImages();
             else
                 cout << "This does not match any choices. Please try again.";
-                break;
+            break;
         case 2: //Mode Canny Edge Detection
             previousResult = result;
             result = cannyEdgeDetection(result);
@@ -160,16 +160,16 @@ int gimp_photo() {
             previousResult = result;
             result = dilatation(result);
             break;
-        case 7 :
-            result = detectAndDraw(result);
+        case 7:
+            result = faceDetection(result);
             break;
-        case 10: //Mode New image
+        case 100: //Mode New image
             result = newImage();
             break;
-        case 11: //Save image
+        case 101: //Save image
             saveImage(result);
             break;
-        case 13: //Mode previous image
+        case 102: //Mode previous image
             result = previousResult;
             break;
 
@@ -208,12 +208,12 @@ int gimp_video() {
         cout << "Choose 7 to enter the rotate Mode\n";
 
 
-        cout << "Choose -1 to finish the program\n";
+        cout << "else : end of the program\n";
 
         cin >> choice;
         switch (choice) {
         case 1:
-
+            result = newVideo();
             // If an image is not found, the program stops
             if (!result.isOpened()) {
                 cout << "Error opening video stream or file" << endl;
@@ -325,6 +325,7 @@ void rotate(VideoCapture video) {
 
         if (waitKey(10) == 27) {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            destroyWindow("GIMP");
             break;
         }
     }
@@ -336,7 +337,7 @@ void rotate(VideoCapture video) {
  */
 void contrast(VideoCapture video, int valeur) {
     namedWindow("GIMP", WINDOW_AUTOSIZE);
-    while (true){
+    while (true) {
         Mat frame;
         // read a new frame from video
         video >> frame;
@@ -350,8 +351,9 @@ void contrast(VideoCapture video, int valeur) {
 
         imshow("GIMP", image);
 
-        if (waitKey(10) == 27){
+        if (waitKey(10) == 27) {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            destroyWindow("GIMP");
             break;
         }
     }
@@ -382,6 +384,7 @@ void darken(VideoCapture video, int valeur) {
         if (waitKey(10) == 27)
         {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            destroyWindow("GIMP");
             break;
         }
     }
@@ -402,7 +405,7 @@ void cannyEdgeDetectionVideo(VideoCapture video) {
 
     namedWindow("GIMP", WINDOW_AUTOSIZE);
 
-    while (true){
+    while (true) {
         Mat frame;
         // read a new frame from video
         video >> frame;
@@ -414,14 +417,16 @@ void cannyEdgeDetectionVideo(VideoCapture video) {
         Mat edges, GrayImage;
 
         cvtColor(frame, GrayImage, COLOR_BGR2GRAY);
-        Canny(edges, edges, lower_treshold, upp_treshold);
+        Canny(frame, edges, lower_treshold, upp_treshold);
 
         imshow("GIMP", edges);
 
-        if (waitKey(10) == 27){
+        if (waitKey(10) == 27) {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            destroyWindow("GIMP");
             break;
         }
+        
     }
 }
 
@@ -460,6 +465,7 @@ void resizer(VideoCapture video) {
 
         if (waitKey(10) == 27) {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            destroyWindow("GIMP");
             break;
         }
     }
@@ -498,6 +504,7 @@ void erosion(VideoCapture video) {
 
         if (waitKey(10) == 27) {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            destroyWindow("GIMP");
             break;
         }
     }
@@ -537,6 +544,7 @@ void dilatation(VideoCapture video) {
 
         if (waitKey(10) == 27) {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            destroyWindow("GIMP");
             break;
         }
     }
@@ -555,7 +563,7 @@ VideoCapture newVideo() {
     cout << "Please enter the absolute path of your video\n";
     String imagesPath;
     cin >> imagesPath;
-    
+
     VideoCapture cap(imagesPath);
 
     return cap;
@@ -801,8 +809,8 @@ void saveImage(Mat image) {
 Mat faceDetection(Mat img) {
     CascadeClassifier cascade;
 
-    cascade.load("C:/opencv/build/etc/haarcascades/haarcascade_frontalface_alt.xml");
-    img = imread("lenna.jpg", IMREAD_COLOR);
+    cascade.load("E:/opencv/opencv/build/etc/haarcascades/haarcascade_frontalface_alt.xml");
+    
     imshow("GIMP", img);
 
     vector<Rect> faces;
@@ -811,7 +819,7 @@ Mat faceDetection(Mat img) {
 
     cascade.detectMultiScale(gray, faces);
 
-    for (size_t i = 0; i < faces.size(); i++){
+    for (size_t i = 0; i < faces.size(); i++) {
         Rect r = faces[i];
         Scalar color = Scalar(255, 0, 0);
         rectangle(img, faces[i], color, 2);
