@@ -11,20 +11,26 @@ using namespace std;
 int gimp_photo();
 int gimp_video();
 
+//Create image or Video
 Mat newImage();
 VideoCapture newVideo();
 
+//Video
 void darken(VideoCapture video, int valeur);
 void contrast(VideoCapture video, int valeur);
 void cannyEdgeDetectionVideo(VideoCapture video);
+void resizer(VideoCapture video);
+void erosion(VideoCapture video);
+void dilatation(VideoCapture video);
 
+//Image
 Mat cannyEdgeDetection(Mat image);
 Mat resizer(Mat image);
 Mat darknen(Mat image);
 Mat panoramaDirectory();
 Mat panoramaImages();
-Mat Erosion(Mat image);
-Mat Dilatation(Mat image);
+Mat erosion(Mat image);
+Mat dilatation(Mat image);
 void save(Mat image, String filepath);
 void saveImage(Mat image);
 
@@ -144,11 +150,11 @@ int gimp_photo() {
             break;
         case 5: //Mode Erosion
             previousResult = result;
-            result = Erosion(result);
+            result = erosion(result);
             break;
         case 6: //Mode Dilatation
             previousResult = result;
-            result = Dilatation(result);
+            result = dilatation(result);
             break;
         case 10: //Mode New image
             result = newImage();
@@ -186,15 +192,37 @@ int gimp_video() {
     //Proposition des différentes valeurs possibles
     while (choice != -1) {
         cout << "\n\n\n\nChoose a positive integer\n";
-        cout << "Choose 1 to enter the Darken\n";
-        cout << "Choose 2 to enter the Contrast\n";
-        cout << "Choose 3 to enter the Canny Edge detection\n";
+        cout << "Choose 1 to enter the Canny Edge detection\n";
+        cout << "Choose 2 to enter the resizer\n";
+        cout << "Choose 3 to enter the Darken\n";
+        cout << "Choose 4 to enter the Erosion mode\n";
+        cout << "Choose 5 to enter the Dilatation mode\n";
+        cout << "Choose 6 to enter the Contrast\n";
 
         cout << "Choose -1 to finish the program\n";
 
         cin >> choice;
         switch (choice) {
         case 1:
+
+            // If an image is not found, the program stops
+            if (!result.isOpened()) {
+                cout << "Error opening video stream or file" << endl;
+                return -1;
+            }
+            cannyEdgeDetectionVideo(result);
+            break;
+        case 2:
+            result = newVideo();
+
+            // If an image is not found, the program stops
+            if (!result.isOpened()) {
+                cout << "Error opening video stream or file" << endl;
+                return -1;
+            }
+            resizer(result);
+            break;
+        case 3:
             result = newVideo();
 
             // If an image is not found, the program stops
@@ -209,7 +237,27 @@ int gimp_video() {
             } while (bright < -255 || bright > 255);
             darken(result, bright);
             break;
-        case 2 :
+        case 4:
+            result = newVideo();
+
+            // If an image is not found, the program stops
+            if (!result.isOpened()) {
+                cout << "Error opening video stream or file" << endl;
+                return -1;
+            }
+            erosion(result);
+            break;
+        case 5:
+            result = newVideo();
+
+            // If an image is not found, the program stops
+            if (!result.isOpened()) {
+                cout << "Error opening video stream or file" << endl;
+                return -1;
+            }
+            dilatation(result);
+            break;
+        case 6:
             result = newVideo();
 
             // If an image is not found, the program stops
@@ -223,16 +271,6 @@ int gimp_video() {
                 cin >> value_constrast;
             } while (value_constrast < 0);
             contrast(result, value_constrast);
-            break;
-        case 3:
-            result = newVideo();
-
-            // If an image is not found, the program stops
-            if (!result.isOpened()) {
-                cout << "Error opening video stream or file" << endl;
-                return -1;
-            }
-            cannyEdgeDetectionVideo(result);
             break;
         default:
             cout << "\nThis is not a valid option !" << endl;
@@ -331,6 +369,123 @@ void cannyEdgeDetectionVideo(VideoCapture video) {
         imshow("GIMP", edges);
 
         if (waitKey(10) == 27){
+            cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            break;
+        }
+    }
+}
+
+/**
+ * @author Thomas Borie
+ * Function to resize the video
+ * This function asks the user what are the two values to enter (x and y)
+ */
+void resizer(VideoCapture video) {
+    //result image
+    Mat scale;
+    // Required parameters
+    double scaleX;
+    double scaleY;
+
+    cout << "Type a scale for X (ex : 0.6): ";
+    cin >> scaleX;
+    cout << "Type a scale for Y (ex : 0.6): ";
+    cin >> scaleY;
+
+    namedWindow("GIMP", WINDOW_AUTOSIZE);
+
+    while (true) {
+        Mat frame;
+        // read a new frame from video
+        video >> frame;
+
+        //Breaking the while loop at the end of the video
+        if (frame.empty())
+            break;
+
+        cv::resize(frame, frame, Size(round(scaleX * frame.cols), round(scaleY * frame.rows)), scaleX, scaleY, INTER_LINEAR);
+
+
+        imshow("GIMP", frame);
+
+        if (waitKey(10) == 27) {
+            cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            break;
+        }
+    }
+}
+
+/*
+ * @author Ludivine Ducamp
+ * Function allowing the erosion of the video
+ * Asks the user for the desired erosion value
+*/
+void erosion(VideoCapture video) {
+    // Required parameters
+    int size;
+    cout << "Enter an erosion value\n";
+    cin >> size;
+
+    int erosion_type = 0;
+    int erosion_elem = MORPH_RECT;
+
+    while (true) {
+        Mat frame;
+        // read a new frame from video
+        video >> frame;
+
+        //Breaking the while loop at the end of the video
+        if (frame.empty())
+            break;
+
+        Mat element = getStructuringElement(erosion_type,
+            Size(2 * size + 1, 2 * size + 1),
+            Point(size, size));
+        erode(frame, frame, element);
+
+
+        imshow("GIMP", frame);
+
+        if (waitKey(10) == 27) {
+            cout << "Esc key is pressed by user. Stoppig the video" << endl;
+            break;
+        }
+    }
+
+}
+
+/*
+ * @author Ludivine Ducamp
+ * Function allowing the dilation of the image
+ * Asks the user for the desired dilation value
+*/
+void dilatation(VideoCapture video) {
+    // Required parameters
+    int size;
+    cout << "Enter a dilation value\n";
+    cin >> size;
+
+    int dilation_type = 0;
+    int dilation_elem = MORPH_RECT;
+
+    while (true) {
+        Mat frame;
+        // read a new frame from video
+        video >> frame;
+
+        //Breaking the while loop at the end of the video
+        if (frame.empty())
+            break;
+
+        Mat element = getStructuringElement(dilation_type,
+            Size(2 * size + 1, 2 * size + 1),
+            Point(size, size));
+        dilate(frame, frame, element);
+
+
+        imshow("GIMP", frame);
+
+        if (waitKey(10) == 27) {
             cout << "Esc key is pressed by user. Stoppig the video" << endl;
             break;
         }
@@ -540,7 +695,7 @@ Mat panoramaDirectory() {
  * Function allowing the erosion of the image
  * Asks the user for the desired erosion value
 */
-Mat Erosion(Mat image) {
+Mat erosion(Mat image) {
     //Image result
     Mat result;
     // Required parameters
@@ -562,7 +717,7 @@ Mat Erosion(Mat image) {
  * Function allowing the dilation of the image
  * Asks the user for the desired dilation value
 */
-Mat Dilatation(Mat image) {
+Mat dilatation(Mat image) {
     //Image result
     Mat result;
     // Required parameters
