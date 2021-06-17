@@ -2,6 +2,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/stitching.hpp>
+#include <opencv2/objdetect.hpp>
 #include <iostream>
 
 using namespace cv;
@@ -22,6 +23,7 @@ void cannyEdgeDetectionVideo(VideoCapture video);
 void resizer(VideoCapture video);
 void erosion(VideoCapture video);
 void dilatation(VideoCapture video);
+void rotate(VideoCapture video);
 
 //Image
 Mat cannyEdgeDetection(Mat image);
@@ -33,6 +35,7 @@ Mat erosion(Mat image);
 Mat dilatation(Mat image);
 void save(Mat image, String filepath);
 void saveImage(Mat image);
+Mat detectAndDraw(Mat img);
 
 
 //Globale variable
@@ -112,6 +115,7 @@ int gimp_photo() {
         cout << "Choose 4 to enter Darknen mode\n";
         cout << "Choose 5 to enter Erosion mode\n";
         cout << "Choose 6 to enter the Dilatation mode\n";
+        cout << "Choose 7 to enter the Face recognation\n";
 
 
         cout << "Choose 10 to open a new image\n";
@@ -156,6 +160,9 @@ int gimp_photo() {
             previousResult = result;
             result = dilatation(result);
             break;
+        case 7 :
+            result = detectAndDraw(result);
+            break;
         case 10: //Mode New image
             result = newImage();
             break;
@@ -198,6 +205,8 @@ int gimp_video() {
         cout << "Choose 4 to enter the Erosion mode\n";
         cout << "Choose 5 to enter the Dilatation mode\n";
         cout << "Choose 6 to enter the Contrast\n";
+        cout << "Choose 7 to enter the rotate Mode\n";
+
 
         cout << "Choose -1 to finish the program\n";
 
@@ -272,9 +281,50 @@ int gimp_video() {
             } while (value_constrast < 0);
             contrast(result, value_constrast);
             break;
+        case 7:
+            result = newVideo();
+
+            // If an image is not found, the program stops
+            if (!result.isOpened()) {
+                cout << "Error opening video stream or file" << endl;
+                return -1;
+            }
+            rotate(result);
+            break;
         default:
-            cout << "\nThis is not a valid option !" << endl;
             choice = -1;
+            break;
+        }
+    }
+    result.release();
+
+}
+
+void rotate(VideoCapture video) {
+    namedWindow("GIMP", WINDOW_AUTOSIZE);
+    //create track bar
+    int iAngle = 180;
+    createTrackbar("Rotation", "GIMP", &iAngle, 360);
+
+
+    while (true) {
+        Mat frame;
+
+        video >> frame;
+
+        //Breaking the while loop at the end of the video
+        if (frame.empty())
+            break;
+
+        //get the affine transformation matrix 2D
+        Mat M = getRotationMatrix2D(Point(frame.cols / 2, frame.rows / 2), (iAngle - 180), 1);
+
+        warpAffine(frame, frame, M, frame.size());
+
+        imshow("GIMP", frame);
+
+        if (waitKey(10) == 27) {
+            cout << "Esc key is pressed by user. Stoppig the video" << endl;
             break;
         }
     }
@@ -745,4 +795,28 @@ Mat dilatation(Mat image) {
  */
 void saveImage(Mat image) {
     imwrite("save.jpg", image);
+}
+
+
+Mat faceDetection(Mat img) {
+    CascadeClassifier cascade;
+
+    cascade.load("C:/opencv/build/etc/haarcascades/haarcascade_frontalface_alt.xml");
+    img = imread("lenna.jpg", IMREAD_COLOR);
+    imshow("GIMP", img);
+
+    vector<Rect> faces;
+    Mat gray;
+    cvtColor(img, gray, COLOR_BGR2GRAY);
+
+    cascade.detectMultiScale(gray, faces);
+
+    for (size_t i = 0; i < faces.size(); i++){
+        Rect r = faces[i];
+        Scalar color = Scalar(255, 0, 0);
+        rectangle(img, faces[i], color, 2);
+    }
+    imshow("GIMP", img);
+    waitKey(10);
+    return img;
 }
